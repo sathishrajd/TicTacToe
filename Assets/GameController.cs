@@ -27,6 +27,9 @@ namespace  Game.TicTacToe
 		Button newGameBtn;
 
 		[SerializeField]
+		Text AutoPlayBtnText;
+
+		[SerializeField]
 		Text gameStatusText = null;
 
 		[SerializeField]
@@ -59,7 +62,10 @@ namespace  Game.TicTacToe
 		float gameStartTime;
 
 		Coroutine gameDelayCoroutine = null;
-			
+
+		bool bAutoPlay = false;
+		private const float DELAY_BETWEEN_AUTOPLAY_GAMES = 4.0f;
+
 		public GameController ()
 		{
 		}
@@ -167,10 +173,29 @@ namespace  Game.TicTacToe
 			}
 		}
 
+		public void OnAutoPlayBtnPressed()
+		{
+			if (!bAutoPlay) 
+			{
+				bAutoPlay = true;
+				AutoPlayBtnText.text = "AutoPlay\nStop";
+				newGameBtn.gameObject.SetActive(false);
+
+				StartNewGame ();
+			}
+			else
+			{
+				bAutoPlay = false;
+				AutoPlayBtnText.text = "AutoPlay";
+				newGameBtn.gameObject.SetActive(true);
+			}
+		}
+
 		private IEnumerator OnWaitAndPlay()
 		{
 			if (GetCurrentPlayer().PlayerType == Player.EPlayerTypes.E_PLAYER_AI || 
-				GetCurrentPlayer().PlayerType == Player.EPlayerTypes.E_PLAYER_RANDOM) 
+				GetCurrentPlayer().PlayerType == Player.EPlayerTypes.E_PLAYER_RANDOM
+				|| bAutoPlay == true) 
 			{
 				yield return new WaitForSeconds (AUTO_PLAY_WAIT_TIME);
 
@@ -201,7 +226,12 @@ namespace  Game.TicTacToe
 			//Update History on end of game
 			gameHistory.ReportGameHistory (isThereAWinner, GetElapsedTime ());
 			historyText.text = gameHistory.GetHistoryString ();
-		}
+
+			if (bAutoPlay) 
+			{
+				Invoke("StartNewGame", DELAY_BETWEEN_AUTOPLAY_GAMES);
+			}
+  	    }
 
 		private void SwitchPlayer()
 		{
