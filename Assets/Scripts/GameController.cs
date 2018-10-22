@@ -12,9 +12,7 @@ namespace  Game.TicTacToe
 		private const short INVALID_PLAYER_INDEX = -1;
 		private const short MAX_PLAYERS = 2;
 
-		private const float AUTO_PLAY_WAIT_TIME = 1.5f;
-
-		int currentPlayerIndex = INVALID_PLAYER_INDEX;
+		private int currentPlayerIndex = INVALID_PLAYER_INDEX;
 		private const short FIRST_PLAYER_INDEX = 0;
 
 		//MathEvaluator can be static but not required
@@ -24,10 +22,10 @@ namespace  Game.TicTacToe
 		Player player2 = new Player();
 
 		[SerializeField]
-		Button newGameBtn;
+		Button newGameBtn = null;
 
 		[SerializeField]
-		Text AutoPlayBtnText;
+		Text AutoPlayBtnText = null;
 
 		[SerializeField]
 		Text gameStatusText = null;
@@ -42,18 +40,24 @@ namespace  Game.TicTacToe
 		GameObject gameBoardObject = null;
 
 		[SerializeField]
-		string player1_name= "";
+		string Player1_Name= "";
 
 		[SerializeField]
-		string player2_name = "";
+		[Tooltip("Enter 0 - Player Input, Random Play - 1 , AI - 2")] 
+		int Player1_Type = 0;
 
 		[SerializeField]
-		[Tooltip("Enter 0 - Input, Random -1 , AI - 2")] 
-		int player1_type = 0;
+		string Player2_Name = "";
 
 		[SerializeField]
-		[Tooltip("Enter 0 - Input, Random -1 , AI - 2")] 
-		int player2_type = 1;
+		[Tooltip("Enter 0 - Player Input, Random Play - 1 , AI - 2")] 
+		int Player2_Type = 2;
+
+		[SerializeField]
+		private float autoPlayWaitTimeInSecs = 1.5f;
+
+		[SerializeField]
+		private float delayInAutoPlayGamesInSecs = 4.0f;
 
 		GameBoard board;
 
@@ -64,7 +68,7 @@ namespace  Game.TicTacToe
 		Coroutine gameDelayCoroutine = null;
 
 		bool bAutoPlay = false;
-		private const float DELAY_BETWEEN_AUTOPLAY_GAMES = 4.0f;
+
 
 		public GameController ()
 		{
@@ -101,12 +105,14 @@ namespace  Game.TicTacToe
 
 		public void StartNewSession()
 		{
-			player1.InitializePlayer (player1_name, (Player.EPlayerTypes)player1_type, MathEvaluator.EBoardSelection.E_Selection_X);
-			player2.InitializePlayer (player2_name, (Player.EPlayerTypes)player2_type, MathEvaluator.EBoardSelection.E_Selection_O);
+			player1.InitializePlayer (Player1_Name, (Player.EPlayerTypes)Player1_Type, MathEvaluator.EBoardSelection.E_Selection_X);
+			player2.InitializePlayer (Player2_Name, (Player.EPlayerTypes)Player2_Type, MathEvaluator.EBoardSelection.E_Selection_O);
 
 			currentPlayerIndex = INVALID_PLAYER_INDEX;
 
-			DisplayStatusMessage ("Select New Game to play ! \n (Toggle player_type in scene for AI, RANDOM or 2 PLAYERS)");
+			DisplayStatusMessage ("Toggle Player[n]_Type in scene " +
+				"for changing play mode to AI, Random or 2 Players" 
+				+ "\n\n Select [New Game] to play !");
 		}
 
 		public void OnNewGameButtonPressed()
@@ -197,7 +203,7 @@ namespace  Game.TicTacToe
 				GetCurrentPlayer().PlayerType == Player.EPlayerTypes.E_PLAYER_RANDOM
 				|| bAutoPlay == true) 
 			{
-				yield return new WaitForSeconds (AUTO_PLAY_WAIT_TIME);
+				yield return new WaitForSeconds (autoPlayWaitTimeInSecs);
 
 				int newPosition = mathEval.GetNextBestMove (board.GameBoardData, GetCurrentPlayer().PlayerMark, 
 					GetCurrentPlayer().PlayerType == Player.EPlayerTypes.E_PLAYER_RANDOM);
@@ -206,7 +212,6 @@ namespace  Game.TicTacToe
 			}
 			else
 			{
-
 				//Enable touches only for the player
 				board.EnableTouches(true);	
 			}
@@ -229,7 +234,7 @@ namespace  Game.TicTacToe
 
 			if (bAutoPlay) 
 			{
-				Invoke("StartNewGame", DELAY_BETWEEN_AUTOPLAY_GAMES);
+				Invoke("StartNewGame", delayInAutoPlayGamesInSecs);
 			}
   	    }
 

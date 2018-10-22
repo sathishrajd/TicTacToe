@@ -15,9 +15,6 @@ namespace Game.TicTacToe
 		private const short WINNING_SCORE = 100;
 		private const short NO_SCORE = 0;
 
-		private const short NUM_WINNING_COMBOS = 8;
-		private const short WINNING_POSITION_SIZE = 3;
-
 		public enum EBoardSelection
 		{
 			E_Selection_None = 0,
@@ -36,10 +33,6 @@ namespace Game.TicTacToe
 				positions = null;
 			}
 		};
-
-		private int[,] WinningCombos = new int[NUM_WINNING_COMBOS, 3] { { 0, 1, 2 }, { 3, 4, 5 }, { 6, 7, 8 }, 
-														{ 0, 3, 6 }, { 1, 4, 7 }, { 2, 5, 8 },
-														{ 0, 4, 8 }, { 2, 4, 6 } };
 
 		public int GetNextBestMove(EBoardSelection [] boardData, EBoardSelection inputMark, bool bIsRandom = false)
 		{
@@ -75,16 +68,28 @@ namespace Game.TicTacToe
 
 			DebugPrint ("GetNextBestMove() no blocking move found to opponent");
 
+			if (oppPlayerMaxScore.score > currPlayerMaxScore.score) 
+			{
+				DebugPrint ("GetNextBestMove() Opposition got a better move");
+
+				int randPosition = UnityEngine.Random.Range (0, oppPlayerMaxScore.positions.Count);
+				return oppPlayerMaxScore.positions [randPosition];
+			}
+
 			//Lets find if there is any position which has high score for both players
 			List<int> match = currPlayerMaxScore.positions.Intersect(oppPlayerMaxScore.positions).ToList<int>();
 
 			if (match.Count > 0) 
 			{
-				return match [0];
+				//get a random positions from list of match
+				int randPosition = UnityEngine.Random.Range (0, match.Count);
+				return match [randPosition];
 			} 
 			else 
 			{
-				return currPlayerMaxScore.positions [0];
+				//get a random positions from list of max score positions
+				int randPosition = UnityEngine.Random.Range (0, currPlayerMaxScore.positions.Count);
+				return currPlayerMaxScore.positions [randPosition];
 			}
 		}
 
@@ -111,19 +116,19 @@ namespace Game.TicTacToe
 
 			EBoardSelection winner = EBoardSelection.E_Selection_None;
 
-			for(int i = 0; i < NUM_WINNING_COMBOS; i++)
+			for(int i = 0; i < MathWinCombos.NUM_WINNING_COMBOS; i++)
 			{
-				if(boardData[WinningCombos[i, 0]] == EBoardSelection.E_Selection_O &&
-					boardData[WinningCombos[i, 1]] == EBoardSelection.E_Selection_O &&
-					boardData[WinningCombos[i, 2]] == EBoardSelection.E_Selection_O)
+				if(boardData[MathWinCombos.WinningCombos[i, 0]] == EBoardSelection.E_Selection_O &&
+					boardData[MathWinCombos.WinningCombos[i, 1]] == EBoardSelection.E_Selection_O &&
+					boardData[MathWinCombos.WinningCombos[i, 2]] == EBoardSelection.E_Selection_O)
 				{
 					CopyWinningPositions (ref winningPositions, i);
 					winner = EBoardSelection.E_Selection_O;
 					break;
 				}
-				else if(boardData[WinningCombos[i, 0]] == EBoardSelection.E_Selection_X &&
-					boardData[WinningCombos[i, 1]] == EBoardSelection.E_Selection_X &&
-					boardData[WinningCombos[i, 2]] == EBoardSelection.E_Selection_X)
+				else if(boardData[MathWinCombos.WinningCombos[i, 0]] == EBoardSelection.E_Selection_X &&
+					boardData[MathWinCombos.WinningCombos[i, 1]] == EBoardSelection.E_Selection_X &&
+					boardData[MathWinCombos.WinningCombos[i, 2]] == EBoardSelection.E_Selection_X)
 				{
 					CopyWinningPositions (ref winningPositions, i);
 					winner = EBoardSelection.E_Selection_X;
@@ -142,11 +147,11 @@ namespace Game.TicTacToe
 		{
 			//DebugPrint ("CopyWinningPositions index = " + index);
 
-			winningPositions = new int[WINNING_POSITION_SIZE];
+			winningPositions = new int[MathWinCombos.WINNING_POSITION_SIZE];
 
-			for (int i = 0; i < WINNING_POSITION_SIZE; i++) 
+			for (int i = 0; i < MathWinCombos.WINNING_POSITION_SIZE; i++) 
 			{
-				winningPositions [i] = WinningCombos [index, i];
+				winningPositions [i] = MathWinCombos.WinningCombos [index, i];
 			}
 		}
 
@@ -246,17 +251,17 @@ namespace Game.TicTacToe
 			int score = 0;
 
 			//How many winning combos are possible with this position
-			for (int i = 0; i < NUM_WINNING_COMBOS; i++) 
+			for (int i = 0; i < MathWinCombos.NUM_WINNING_COMBOS; i++) 
 			{
 				//Check if the given position is part of winning combo
-				if (WinningCombos [i, 0] == position
-				   || WinningCombos [i, 1] == position
-				   || WinningCombos [i, 2] == position) 
+				if (MathWinCombos.WinningCombos [i, 0] == position
+					|| MathWinCombos.WinningCombos [i, 1] == position
+					|| MathWinCombos.WinningCombos [i, 2] == position) 
 				{
 					//We can ignore the winning combo, if the oponent already has a mark on it
-					if (clonedBoard [WinningCombos [i, 0]] != GetOppPlayerMark (inputMark) &&
-					   	clonedBoard [WinningCombos [i, 1]] != GetOppPlayerMark (inputMark) &&
-					   	clonedBoard [WinningCombos [i, 2]] != GetOppPlayerMark (inputMark)) 
+					if (clonedBoard [MathWinCombos.WinningCombos [i, 0]] != GetOppPlayerMark (inputMark) &&
+						clonedBoard [MathWinCombos.WinningCombos [i, 1]] != GetOppPlayerMark (inputMark) &&
+						clonedBoard [MathWinCombos.WinningCombos [i, 2]] != GetOppPlayerMark (inputMark)) 
 					{
 						score++;
 					}

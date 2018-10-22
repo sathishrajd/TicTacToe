@@ -17,14 +17,14 @@ Platform assembly: C:\Users\SDhanaraj\Desktop\Shared_TTT\TicTacToe\TicTacToe_Dat
 Loading C:\Users\SDhanaraj\Desktop\Shared_TTT\TicTacToe\TicTacToe_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: C:\Users\SDhanaraj\Desktop\Shared_TTT\TicTacToe\TicTacToe_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
 Loading C:\Users\SDhanaraj\Desktop\Shared_TTT\TicTacToe\TicTacToe_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
-- Completed reload, in  0.248 seconds
+- Completed reload, in  0.028 seconds
 Platform assembly: C:\Users\SDhanaraj\Desktop\Shared_TTT\TicTacToe\TicTacToe_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\SDhanaraj\Desktop\Shared_TTT\TicTacToe\TicTacToe_Data\Managed\System.dll (this message is harmless)
 <RI> Initializing input.
 <RI> Input initialized.
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initialized touch support.
-UnloadTime: 2.642474 ms
+UnloadTime: 2.681565 ms
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 6b6c -> priority: 1 
-  Thread -> id: 7164 -> priority: 1 
+  Thread -> id: 2750 -> priority: 1 
+  Thread -> id: 2500 -> priority: 1 
