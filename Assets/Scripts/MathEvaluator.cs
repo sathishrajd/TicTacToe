@@ -1,6 +1,7 @@
 ﻿//MathEvaluator.cs - Responsible for evaluating the outcome of the game
 //				  	 Get the best outcome to play the next move(AI)
 //					 Random outcome to test the AI
+
 namespace Game.TicTacToe
 {
 	using System;
